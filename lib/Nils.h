@@ -15,8 +15,7 @@ class Nils {
   void runPassOnDir(const std::string &Dir);
 
 public:
-  explicit Nils(const std::string &DirToReduce) : DirToReduce(DirToReduce) {
-  }
+  explicit Nils(const std::string &DirToReduce);
 
   void iter();
 };

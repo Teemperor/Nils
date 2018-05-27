@@ -118,3 +118,16 @@ std::vector<std::string> Utils::listFiles(const std::string &Dir,
   return Result;
 }
 
+std::string Utils::readFile(const std::string &Path) {
+  std::ifstream In(Path);
+  std::string Result;
+
+  In.seekg(0, std::ios::end);
+  Result.reserve(static_cast<unsigned long>(In.tellg()));
+  In.seekg(0, std::ios::beg);
+
+  Result.assign((std::istreambuf_iterator<char>(In)),
+             std::istreambuf_iterator<char>());
+  return Result;
+}
+

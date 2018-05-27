@@ -2,8 +2,15 @@
 #include <cassert>
 #include <unistd.h>
 #include <NativePasses/DeleteLinePass.h>
+#include <NativePasses/DeleteCharRangePass.h>
 #include "Nils.h"
 #include "Utils.h"
+
+
+Nils::Nils(const std::string &DirToReduce) : DirToReduce(DirToReduce) {
+  PassMgr.addPass(new DeleteLinePass());
+  PassMgr.addPass(new DeleteCharRangePass());
+}
 
 namespace {
   struct SaveWorkingDir {
@@ -44,8 +51,9 @@ std::string Nils::createTmpDir() {
 }
 
 void Nils::runPassOnDir(const std::string &Dir) {
-  DeleteLinePass P;
   static std::size_t Ran = 0;
   ++Ran;
-  P.runOnDir({Ran, Dir});
+  auto *P = PassMgr.getNextPass();
+  P->runOnDir({Ran, Dir});
 }
+

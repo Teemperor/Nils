@@ -6,7 +6,7 @@
 
 class DeleteLinePass : public Pass {
 public:
-  void runOnDir(const PassRun &Run) override;
+  void runOnDir(const PassRun &Run) const override;
 };
 
 

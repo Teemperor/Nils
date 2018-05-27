@@ -10,7 +10,7 @@ struct PassRun {
 
 class Pass {
 public:
-  virtual void runOnDir(const PassRun &Run) = 0;
+  virtual void runOnDir(const PassRun &Run) const = 0;
 };
 
 #endif //NILS_PASS_H

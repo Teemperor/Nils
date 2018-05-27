@@ -12,7 +12,7 @@
 #include <Utils.h>
 
 
-void DeleteLinePass::runOnDir(const PassRun &Run) {
+void DeleteLinePass::runOnDir(const PassRun &Run) const {
   auto Files = Utils::listFiles(Run.Dir);
 
   if (Files.empty())
