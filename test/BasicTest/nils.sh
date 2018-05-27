@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cat data | grep -q this
+cat data | grep -q weird

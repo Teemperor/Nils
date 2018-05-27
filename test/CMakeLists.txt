@@ -22,6 +22,7 @@ foreach(subdir ${SUBDIRS})
 
   add_test(NAME "Test${subdir}"
            COMMAND
+           bash -x
            "${CMAKE_CURRENT_SOURCE_DIR}/run.sh"
            "${CMAKE_BINARY_DIR}/nils"
            "${source_path}"
