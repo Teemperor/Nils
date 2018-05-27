@@ -11,5 +11,6 @@ int main(int argv, char **argc) {
     Dir = argc[1];
   }
 
-  Nils M(Dir);
+  Nils N(Dir);
+  N.iter();
 }

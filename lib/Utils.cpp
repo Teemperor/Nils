@@ -12,7 +12,7 @@ void Utils::copyDir(const std::string &Source, const std::string &Target) {
   runCmd("cp", {"-r", Source, Target});
 }
 
-std::string Utils::runCmd(const std::string &Exe,
+CmdResult Utils::runCmd(const std::string &Exe,
                           const std::vector<std::string> &Args,
                           const std::string &WorkingDir) {
   const unsigned BufferSize = 128;
@@ -24,18 +24,19 @@ std::string Utils::runCmd(const std::string &Exe,
   if (!WorkingDir.empty()) {
     ShellCmd = buildShellCmd("cd", {WorkingDir}) + " ; " + ShellCmd;
   }
+  ShellCmd += " 2>&1";
 
-  std::shared_ptr<FILE> Pipe(popen(ShellCmd.c_str(), "r"), pclose);
+  FILE *Pipe = popen(ShellCmd.c_str(), "r");
 
   if (!Pipe)
     throw std::runtime_error("popen() failed!");
 
-  while (!feof(Pipe.get())) {
-    if (fgets(buffer.data(), BufferSize, Pipe.get()) != nullptr)
+  while (!feof(Pipe)) {
+    if (fgets(buffer.data(), BufferSize, Pipe) != nullptr)
       Result << buffer.data();
   }
 
-  return Result.str();
+  return {Result.str(), WEXITSTATUS(pclose(Pipe))};
 }
 
 std::string Utils::buildShellCmd(const std::string &Exe,
