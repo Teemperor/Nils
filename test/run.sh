@@ -18,4 +18,4 @@ cp -r "$source_dir" "$tmp_dir"
 cd "$tmp_dir"
 "$nils_exe"
 
-diff -r "$source_dir.expected" "$tmp_dir"
+diff -r -U3 "$source_dir.expected" "$tmp_dir"

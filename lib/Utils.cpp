@@ -22,6 +22,11 @@ void Utils::deleteDir(const std::string &Path) {
   runCmd("rm", {"-rf", Path});
 }
 
+void Utils::deleteFile(const std::string &Path) {
+  runCmd("rm", {"-f", Path});
+}
+
+
 void Utils::copyDir(const std::string &Source, const std::string &Target) {
   deleteDir(Target);
   runCmd("cp", {"-r", Source, Target});

@@ -13,6 +13,8 @@ void DeleteCharRangePass::runOnDir(const PassRun &Run) const {
   auto File = selectRandom(Files, Eng);
 
   std::string Content = Utils::readFile(File);
+  if (Content.empty())
+    return;
 
   auto StartIndex = getRandomBelow(Content.size() - 1, Eng);
   auto EndIndex = getRandomBelow(Content.size(), Eng);

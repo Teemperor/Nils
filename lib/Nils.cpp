@@ -13,6 +13,14 @@
 Nils::Nils(const std::string &DirToReduce) : DirToReduce(DirToReduce) {
   PassMgr.addPass(new DeleteLinePass());
   PassMgr.addPass(new DeleteCharRangePass());
+
+
+  std::string TestDir = createTmpDir();
+  std::string TestCmd = TestDir + "/nils.sh";
+  CmdResult TestResult = Utils::runCmd(TestCmd, {}, TestDir);
+  if (TestResult.ExitCode != 0) {
+    assert(false);
+  }
 }
 
 namespace {
@@ -46,10 +54,8 @@ namespace {
 PassResult Nils::iter() {
   std::string TestDir = createTmpDir();
   std::string TestCmd = TestDir + "/nils.sh";
-  CmdResult TestResult = Utils::runCmd(TestCmd, {}, TestDir);
-  if (TestResult.ExitCode != 0) {
-    assert(false);
-  }
+
+  Utils::deleteFile(TestCmd);
 
   PassResult Result;
   Result.DirSizeChange = static_cast<long long>(Utils::sizeOfDir(TestDir));
@@ -59,18 +65,19 @@ PassResult Nils::iter() {
     Result.PassName = P->getName();
   }
 
-  Utils::copyFile(DirToReduce + "/nils.sh", TestCmd);
-
   Result.DirSizeChange -= static_cast<long long>(Utils::sizeOfDir(TestDir));
   Result.DirSizeChange *= -1;
 
-  TestResult = Utils::runCmd(TestCmd, {}, TestDir);
+  Utils::copyFile(DirToReduce + "/nils.sh", TestCmd);
+
+  CmdResult TestResult = Utils::runCmd(TestCmd, {}, TestDir);
   Result.Success = TestResult.ExitCode == 0 && Result.DirSizeChange < 0;
 
   if (TestResult.ExitCode == 0) {
     SaveWorkingDir RAII("/");
     Utils::copyDir(TestDir, DirToReduce);
   }
+
 
   return Result;
 }
@@ -89,7 +96,7 @@ const Pass *Nils::runPassOnDir(const std::string &Dir) {
 }
 
 void Nils::run() {
-  unsigned MaxErrorSequence = 100;
+  unsigned MaxErrorSequence = 200;
   unsigned ErrorSequence = MaxErrorSequence;
   while (true) {
     PassResult R = iter();
