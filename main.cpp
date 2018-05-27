@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <Nils.h>
+#include <iostream>
 
 int main(int argv, char **argc) {
   std::string Dir;
@@ -12,5 +13,8 @@ int main(int argv, char **argc) {
   }
 
   Nils N(Dir);
-  N.iter();
+  for (int i = 0; i < 3; ++i) {
+    std::cout << "Iter: " << i << std::endl;
+    N.iter();
+  }
 }

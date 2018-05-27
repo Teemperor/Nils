@@ -8,6 +8,10 @@ class Nils {
   std::string DirToReduce;
   std::string TmpDir = "/tmp/nils";
 
+  std::string createTmpDir();
+
+  void runPassOnDir(const std::string &Dir);
+
 public:
   explicit Nils(const std::string &DirToReduce) : DirToReduce(DirToReduce) {
   }
