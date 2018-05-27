@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <sstream>
 #include <random>
 
 struct CmdResult {
@@ -29,7 +30,27 @@ public:
   static std::string readFile(const std::string &Path);
 
   static std::size_t sizeOfDir(const std::string &Path);
+
+  static bool stringEndsWith(const std::string &Str, const std::string &Suffix);
+  static bool stringStartsWith(const std::string &Str, const std::string &Prefix) {
+    return Str.find(Prefix) == 0;
+  }
+
 };
+
+template<typename Out>
+void splitStr(const std::string &S, char Delimiter, Out &Result) {
+  std::string DelimStr(1, Delimiter);
+  if (S.find(DelimStr) == std::string::npos) {
+    Result.push_back(S);
+    return;
+  }
+  std::stringstream SS(S);
+  std::string Item;
+  while (std::getline(SS, Item, Delimiter)) {
+    Result.push_back(Item);
+  }
+}
 
 template<typename T>  std::size_t getRandomBelow(std::size_t Limit, T &Engine) {
   std::uniform_int_distribution<std::size_t> RandomIndex(0, Limit - 1);

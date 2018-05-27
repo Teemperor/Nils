@@ -140,3 +140,12 @@ std::size_t Utils::sizeOfDir(const std::string &Path) {
   return Result;
 }
 
+bool Utils::stringEndsWith(const std::string &Str, const std::string &Suffix) {
+  if (Str.length() >= Suffix.length()) {
+    return (0 == Str.compare (Str.length() - Suffix.length(),
+                              Suffix.length(), Suffix));
+  } else {
+    return false;
+  }
+}
+

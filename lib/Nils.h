@@ -14,12 +14,14 @@ class Nils {
 
   std::string createTmpDir();
 
-  void runPassOnDir(const std::string &Dir);
+  const Pass *runPassOnDir(const std::string &Dir);
 
   std::function<void(const PassResult &)> Callback;
 
 public:
   explicit Nils(const std::string &DirToReduce);
+
+  void loadPassesFromDir(const std::string &Path);
 
   void setCallback(const std::function<void(const PassResult&)> &C) {
     Callback = C;

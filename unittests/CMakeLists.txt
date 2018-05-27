@@ -13,3 +13,4 @@ file(DOWNLOAD "https://github.com/catchorg/Catch2/releases/download/v2.2.2/catch
     "${CMAKE_BINARY_DIR}/catch/catch.hpp")
 
 add_unit_test(ShellCommandTest)
+add_unit_test(UtilsTest)

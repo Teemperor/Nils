@@ -6,6 +6,10 @@ tmp_dir="$3"
 
 set -e
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+export NILS_PASS_DIRS="$DIR/../passes"
+
 mkdir -p "$tmp_dir"
 
 rm -rf "$tmp_dir"

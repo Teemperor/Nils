@@ -7,6 +7,7 @@
 #include "Nils.h"
 #include "Utils.h"
 #include "PassResult.h"
+#include "ExecutablePass.h"
 
 
 Nils::Nils(const std::string &DirToReduce) : DirToReduce(DirToReduce) {
@@ -54,7 +55,8 @@ PassResult Nils::iter() {
   Result.DirSizeChange = static_cast<long long>(Utils::sizeOfDir(TestDir));
   {
     MeasureTime<std::chrono::nanoseconds> RAII(Result.PassTime);
-    runPassOnDir(TestDir);
+    const Pass *P = runPassOnDir(TestDir);
+    Result.PassName = P->getName();
   }
 
   Utils::copyFile(DirToReduce + "/nils.sh", TestCmd);
@@ -78,15 +80,16 @@ std::string Nils::createTmpDir() {
   return TmpDir;
 }
 
-void Nils::runPassOnDir(const std::string &Dir) {
+const Pass *Nils::runPassOnDir(const std::string &Dir) {
   static std::size_t Ran = 0;
   ++Ran;
   auto *P = PassMgr.getNextPass();
   P->runOnDir({Ran, Dir});
+  return P;
 }
 
 void Nils::run() {
-  unsigned MaxErrorSequence = 15;
+  unsigned MaxErrorSequence = 100;
   unsigned ErrorSequence = MaxErrorSequence;
   while (true) {
     PassResult R = iter();
@@ -100,6 +103,16 @@ void Nils::run() {
         break;
     } else {
       ErrorSequence = MaxErrorSequence;
+    }
+  }
+}
+
+void Nils::loadPassesFromDir(const std::string &Path) {
+  auto Files = Utils::listFiles(Path, false);
+  for (auto &File : Files) {
+    if (Utils::stringEndsWith(File, ".NilsPass")) {
+      auto *P = new ExecutablePass(File);
+      PassMgr.addPass(P);
     }
   }
 }

@@ -10,6 +10,7 @@ struct PassRun {
 
 class Pass {
 public:
+  virtual const char *getName() const = 0;
   virtual void runOnDir(const PassRun &Run) const = 0;
 };
 

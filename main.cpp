@@ -14,8 +14,19 @@ int main(int argv, char **argc) {
 
   Nils N(Dir);
 
+  // Load any passes from specified directories.
+  if (getenv("NILS_PASS_DIRS")) {
+    std::string PassDirStr(getenv("NILS_PASS_DIRS"));
+    std::vector<std::string> PassDirs;
+    splitStr(PassDirStr, ':', PassDirs);
+
+    for (auto &PassDir : PassDirs) {
+      N.loadPassesFromDir(PassDir);
+    }
+  }
+
   N.setCallback([](const PassResult &Result){
-    std::cout << " EXIT " << Result.Success << " Pass took: "
+    std::cout << Result.PassName << " EXIT " << Result.Success << " Pass took: "
               << Result.PassTime << " and reduced by "
               << Result.DirSizeChange << std::endl;
     return;

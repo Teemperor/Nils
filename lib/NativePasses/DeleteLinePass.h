@@ -6,6 +6,9 @@
 
 class DeleteLinePass : public Pass {
 public:
+  const char *getName() const override {
+    return "DeleteLinePass";
+  }
   void runOnDir(const PassRun &Run) const override;
 };
 

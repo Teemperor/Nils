@@ -16,6 +16,7 @@ add_library(nilsLib
     PassResult.cpp
     PassResult.h
     ExecutablePass.cpp
-    ExecutablePass.h)
+    ExecutablePass.h
+)
 
 target_link_libraries(nilsLib)
