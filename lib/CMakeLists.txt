@@ -13,6 +13,9 @@ add_library(nilsLib
     NativePasses/DeleteLinePass.h
     NativePasses/DeleteCharRangePass.cpp
     NativePasses/DeleteCharRangePass.h
-        PassResult.cpp PassResult.h)
+    PassResult.cpp
+    PassResult.h
+    ExecutablePass.cpp
+    ExecutablePass.h)
 
 target_link_libraries(nilsLib)
