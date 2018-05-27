@@ -5,6 +5,21 @@
 #include "Nils.h"
 #include "Utils.h"
 
+namespace {
+  struct SaveWorkingDir {
+    char *Dir;
+
+    explicit SaveWorkingDir(const char *Backup) {
+      Dir = get_current_dir_name();
+      chdir(Backup);
+    }
+    ~SaveWorkingDir() {
+      chdir(Dir);
+      free(Dir);
+    }
+  };
+}
+
 void Nils::iter() {
   std::string TestDir = createTmpDir();
   std::string TestCmd = TestDir + "/nils.sh";
@@ -18,11 +33,8 @@ void Nils::iter() {
 
   TestResult = Utils::runCmd(TestCmd, {}, TestDir);
   if (TestResult.ExitCode == 0) {
-    char *Pwd = get_current_dir_name();
-    chdir("/");
+    SaveWorkingDir RAII("/");
     Utils::copyDir(TestDir, DirToReduce);
-    chdir(Pwd);
-    free(Pwd);
   }
 }
 

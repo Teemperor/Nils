@@ -9,35 +9,18 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include <Utils.h>
 
-static std::vector<std::string> listFiles(const std::string &Dir) {
-  std::vector<std::string> Result;
-
-  DIR *dir;
-  struct dirent *ent;
-  if ((dir = opendir(Dir.c_str())) != nullptr) {
-    while ((ent = readdir (dir)) != nullptr) {
-      if (ent->d_type == DT_REG)
-        Result.push_back(Dir + "/" + ent->d_name);
-    }
-    closedir (dir);
-  } else {
-    assert(false);
-  }
-
-  return Result;
-}
 
 void DeleteLinePass::runOnDir(const PassRun &Run) {
-  auto Files = listFiles(Run.Dir);
+  auto Files = Utils::listFiles(Run.Dir);
 
   if (Files.empty())
     return;
 
   std::mt19937 Eng(Run.Rng);
-  std::uniform_int_distribution<std::size_t> RandomFile(0, Files.size() - 1);
 
-  auto File = Files.at(RandomFile(Eng));
+  auto File = selectRandom(Files, Eng);
 
   std::vector<std::string> Lines;
 
@@ -53,14 +36,14 @@ void DeleteLinePass::runOnDir(const PassRun &Run) {
 
   if (Lines.empty())
     return;
-  std::uniform_int_distribution<std::size_t> RandomLineDist(0, Lines.size() - 1);
-  std::size_t RemovedLine = RandomLineDist(Eng);
+
+  std::size_t RemovedLine = getRandomBelow(Lines.size(), Eng);
 
   std::ofstream Out(File);
   std::size_t Index = 0;
   for (auto &Line : Lines) {
     if (Index != RemovedLine)
-      Out << Line;
+      Out << Line << "\n";
     ++Index;
   }
 }

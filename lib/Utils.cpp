@@ -1,5 +1,15 @@
 #include "Utils.h"
 
+
+#include <dirent.h>
+#include <cassert>
+#include <vector>
+#include <random>
+#include <iostream>
+#include <iterator>
+#include <fstream>
+#include <vector>
+#include <algorithm>
 #include <sstream>
 #include <cstdio>
 #include <iostream>
@@ -78,6 +88,32 @@ CmdResult Utils::runRawCmd(const std::string &ShellCmd) {
     std::cout << " OUTPUT: " << Result.Stdout << std::endl;
     std::cout << " EXIT CODE: " << Result.ExitCode << std::endl;
 #endif
+
+  return Result;
+}
+
+std::vector<std::string> Utils::listFiles(const std::string &Dir,
+                                          bool Recursive) {
+  std::vector<std::string> Result;
+
+  DIR *dir;
+  struct dirent *ent;
+  if ((dir = opendir(Dir.c_str())) != nullptr) {
+    while ((ent = readdir (dir)) != nullptr) {
+      std::string Path(ent->d_name);
+      std::string FullPath = Dir + "/" + Path;
+      if (ent->d_type == DT_REG)
+        Result.push_back(FullPath);
+      if (ent->d_type == DT_DIR && Recursive &&
+          Path != "." && Path != "..") {
+        auto Children = listFiles(FullPath);
+        Result.insert(Result.end(), Children.begin(), Children.end());
+      }
+    }
+    closedir (dir);
+  } else {
+    assert(false);
+  }
 
   return Result;
 }
