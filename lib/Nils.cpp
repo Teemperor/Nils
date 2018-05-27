@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cassert>
 #include <unistd.h>
+#include <NativePasses/DeleteLinePass.h>
 #include "Nils.h"
 #include "Utils.h"
 
@@ -31,5 +32,8 @@ std::string Nils::createTmpDir() {
 }
 
 void Nils::runPassOnDir(const std::string &Dir) {
-  Utils::runRawCmd("cd " + Dir + " ; echo -n 'weird' > data");
+  DeleteLinePass P;
+  static std::size_t Ran = 0;
+  ++Ran;
+  P.runOnDir({Ran, Dir});
 }

@@ -1,12 +1,14 @@
 #ifndef NILS_NILS_H
 #define NILS_NILS_H
 
-
 #include <string>
+#include "PassManager.h"
 
 class Nils {
   std::string DirToReduce;
   std::string TmpDir = "/tmp/nils";
+
+  PassManager PassMgr;
 
   std::string createTmpDir();
 

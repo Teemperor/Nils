@@ -13,7 +13,7 @@ int main(int argv, char **argc) {
   }
 
   Nils N(Dir);
-  for (int i = 0; i < 3; ++i) {
+  for (int i = 0; i < 20; ++i) {
     std::cout << "Iter: " << i << std::endl;
     N.iter();
   }
