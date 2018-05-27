@@ -83,6 +83,7 @@ CmdResult Utils::runRawCmd(const std::string &ShellCmd) {
 
   CmdResult Result = {Output.str(), WEXITSTATUS(pclose(Pipe))};
 
+//#define PRINT_DEBUG
 #ifdef PRINT_DEBUG
     std::cout << "RUNNING:" << ShellCmd << std::endl;
     std::cout << " OUTPUT: " << Result.Stdout << std::endl;
@@ -128,6 +129,14 @@ std::string Utils::readFile(const std::string &Path) {
 
   Result.assign((std::istreambuf_iterator<char>(In)),
              std::istreambuf_iterator<char>());
+  return Result;
+}
+
+std::size_t Utils::sizeOfDir(const std::string &Path) {
+  CmdResult DuResult = runCmd("du", {"-sb", Path});
+  std::istringstream ISS(DuResult.Stdout);
+  std::size_t Result;
+  ISS >> Result;
   return Result;
 }
 

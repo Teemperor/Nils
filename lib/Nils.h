@@ -2,7 +2,9 @@
 #define NILS_NILS_H
 
 #include <string>
+#include <functional>
 #include "PassManager.h"
+#include "PassResult.h"
 
 class Nils {
   std::string DirToReduce;
@@ -14,10 +16,17 @@ class Nils {
 
   void runPassOnDir(const std::string &Dir);
 
+  std::function<void(const PassResult &)> Callback;
+
 public:
   explicit Nils(const std::string &DirToReduce);
 
-  void iter();
+  void setCallback(const std::function<void(const PassResult&)> &C) {
+    Callback = C;
+  }
+
+  void run();
+  PassResult iter();
 };
 
 

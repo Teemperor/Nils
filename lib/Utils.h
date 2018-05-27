@@ -27,6 +27,8 @@ public:
   static std::vector<std::string> listFiles(const std::string &Dir, bool Recursive = true);
 
   static std::string readFile(const std::string &Path);
+
+  static std::size_t sizeOfDir(const std::string &Path);
 };
 
 template<typename T>  std::size_t getRandomBelow(std::size_t Limit, T &Engine) {

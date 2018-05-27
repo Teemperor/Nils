@@ -13,8 +13,13 @@ int main(int argv, char **argc) {
   }
 
   Nils N(Dir);
-  for (int i = 0; i < 70; ++i) {
-    std::cout << "Iter: " << i << std::endl;
-    N.iter();
-  }
+
+  N.setCallback([](const PassResult &Result){
+    std::cout << " EXIT " << Result.Success << " Pass took: "
+              << Result.PassTime << " and reduced by "
+              << Result.DirSizeChange << std::endl;
+    return;
+  });
+
+  N.run();
 }
