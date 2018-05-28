@@ -108,7 +108,7 @@ const Pass *Nils::runPassOnDir(const std::string &Dir) {
 }
 
 void Nils::run() {
-  unsigned MaxErrorSequence = 200;
+  unsigned MaxErrorSequence = 400;
   unsigned ErrorSequence = MaxErrorSequence;
   while (true) {
     PassResult R = iter();
