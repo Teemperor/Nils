@@ -79,7 +79,8 @@ int main(int argv, char **argc) {
   }
 
   N.setCallback([](const PassResult &Result){
-    std::string Status = Result.Success ? "[ GOOD ]" : "[ FAIL ]";
+    std::string Status = Result.Success ?
+                         color(Green, "[GOOD]") : color(Red, "[FAIL]");
     std::cout << Status << " " << Result.UsedPass->getName()
               << " Pass took: " << Result.PassTime << " and changed size by "
               << Result.DirSizeChange << std::endl;
