@@ -42,15 +42,15 @@ PassResult Nils::iter() {
   PassMgr.dumpStats();
 
   static std::size_t Ran = 0;
-  ++Ran;
 
-  std::size_t Jobs = 1;
+  std::size_t Jobs = 7;
   std::vector<std::thread *> Threads;
 
   std::vector<PassResult> Results;
   Results.resize(Jobs);
 
   for (std::size_t Index = 0; Index < Jobs; Index ++) {
+    ++Ran;
     const Pass *P = PassMgr.getNextPass();
     std::string JobDir = TmpDir + "-j" + std::to_string(Index);
 
