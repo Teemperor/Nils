@@ -3,5 +3,7 @@
 set -e
 set -o pipefail
 
-output=$(timeout 0.3s python prog.py) 
-echo "$output" | grep -q "90 bottles of beer on the wall"
+echo "$PWD"
+
+output=$(timeout 0.3s python prog.py 2>&1)
+echo "$output" | grep -q "^4 bottles of beer on the wall,$"
