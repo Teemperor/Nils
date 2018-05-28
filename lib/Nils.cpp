@@ -25,7 +25,7 @@ Nils::Nils(const std::string &DirToReduce) : DirToReduce(DirToReduce) {
   TmpDir = "/tmp/nils" + std::to_string(getppid());
 
   auto InitTestDir = TmpDir + "-inittest";
-  Job TestJob(DirToReduce, InitTestDir);
+  Job TestJob(DirToReduce, InitTestDir, 0);
   auto TestResult = TestJob.run(nullptr);
   if (!TestResult.Success) {
     std::cerr << "When running the 'nils.sh' test file in the directory "
@@ -40,7 +40,10 @@ Nils::Nils(const std::string &DirToReduce) : DirToReduce(DirToReduce) {
 PassResult Nils::iter() {
   const Pass *P = PassMgr.getNextPass();
 
-  Job J(DirToReduce, TmpDir);
+  static std::size_t Ran = 0;
+  ++Ran;
+
+  Job J(DirToReduce, TmpDir, Ran);
   auto Result = J.run(P);
   PassMgr.feedback(P, Result);
 

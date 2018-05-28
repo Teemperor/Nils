@@ -12,7 +12,8 @@ class Job {
   std::size_t Seed = 0;
 
 public:
-  explicit Job(const std::string &SourceDir, const std::string &WorkingDir);
+  explicit Job(const std::string &SourceDir, const std::string &WorkingDir,
+               std::size_t Seed);
 
   PassResult run(const Pass *PassToRun);
 };

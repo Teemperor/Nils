@@ -8,8 +8,9 @@ std::string Job::createTmpDir() {
   return WorkingDir;
 }
 
-Job::Job(const std::string &SourceDir, const std::string &WorkingDir)
-    : SourceDir(SourceDir), WorkingDir(WorkingDir) {}
+Job::Job(const std::string &SourceDir, const std::string &WorkingDir,
+         std::size_t Seed)
+    : SourceDir(SourceDir), WorkingDir(WorkingDir), Seed(Seed) {}
 
 PassResult Job::run(const Pass *PassToRun) {
   ++Seed;
