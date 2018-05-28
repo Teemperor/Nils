@@ -10,6 +10,9 @@ class PassManager {
   std::vector<Pass *> Passes;
 
   class PassRecord {
+    std::size_t TotalRuns = 1;
+    std::size_t GoodRuns = 1;
+
     std::size_t Points = 1;
     std::size_t FailedLastNTimes = 0;
     const Pass *P;
@@ -22,10 +25,19 @@ class PassManager {
     std::size_t getPoints() const {
       return Points;
     }
+
+    std::size_t getTotalPoints() const {
+      std::size_t Result = Points;
+      Result += 100 * (GoodRuns / (double) TotalRuns);
+      return Result;
+    }
+
     void feedback(const PassResult &Result) {
-      if (Result.Success)
+      TotalRuns++;
+      if (Result.Success) {
         FailedLastNTimes = 0;
-      else
+        GoodRuns++;
+      } else
         FailedLastNTimes++;
     }
     std::size_t getFailedLastNTimes() const {

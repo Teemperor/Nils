@@ -27,7 +27,7 @@ const Pass *PassManager::getNextPass() {
 
   std::size_t PointsSum = 0;
   for (auto &E : PassRecords) {
-    PointsSum += E.getPoints();
+    PointsSum += E.getTotalPoints();
   }
 
   std::size_t SelectedPassPoints = getRandomBelow(PointsSum, Eng);
@@ -35,10 +35,10 @@ const Pass *PassManager::getNextPass() {
   dumpStats();
 
   for (auto &E : PassRecords) {
-    if (E.getPoints() > SelectedPassPoints) {
+    if (E.getTotalPoints() > SelectedPassPoints) {
       return E.getPass();
     } else {
-      SelectedPassPoints -= E.getPoints();
+      SelectedPassPoints -= E.getTotalPoints();
     }
     PointsSum += E.getPoints();
   }
@@ -59,7 +59,7 @@ void PassManager::dumpStats() {
     std::cout << " PASS: ";
     std::cout << std::setw(25) << std::left;
     std::cout << E.getPass()->getName() << " : ";
-    std::cout << std::setw(10) << std::left << E.getPoints();
+    std::cout << std::setw(10) << std::left << E.getTotalPoints();
     std::cout  << "(FailedN: " << E.getFailedLastNTimes() << ")\n";
   }
 }
