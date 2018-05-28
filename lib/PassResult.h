@@ -10,6 +10,7 @@ struct PassResult {
   std::size_t PassTime = 0;
   const Pass *UsedPass = nullptr;
   bool Success = false;
+  std::string WorkingDir;
 };
 
 #endif // NILS_PASSRESULT_H

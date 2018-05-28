@@ -18,9 +18,12 @@ PassResult Job::run(const Pass *PassToRun) {
   std::string TestDir = createTmpDir();
   std::string TestCmd = TestDir + "/nils.sh";
 
+  Utils::runCmd(TestCmd, {}, TestDir).assumeGood();
+
   Utils::deleteFile(TestCmd);
 
   PassResult Result;
+  Result.WorkingDir = WorkingDir;
 
   Result.DirSizeChange = static_cast<long long>(Utils::sizeOfDir(TestDir));
   if (PassToRun) {
@@ -35,7 +38,7 @@ PassResult Job::run(const Pass *PassToRun) {
   Utils::copyFile(SourceDir + "/nils.sh", TestCmd);
 
   CmdResult TestResult = Utils::runCmd(TestCmd, {}, TestDir);
-  Result.Success = TestResult.ExitCode == 0;
+  Result.Success = (TestResult.ExitCode == 0);
   // If we have a pass, it's only an success if that pass reduces the size.
   if (PassToRun)
     Result.Success &= Result.DirSizeChange < 0;

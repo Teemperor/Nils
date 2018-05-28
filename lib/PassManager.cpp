@@ -32,8 +32,6 @@ const Pass *PassManager::getNextPass() {
 
   std::size_t SelectedPassPoints = getRandomBelow(PointsSum, Eng);
 
-  dumpStats();
-
   for (auto &E : PassRecords) {
     if (E.getTotalPoints() > SelectedPassPoints) {
       return E.getPass();

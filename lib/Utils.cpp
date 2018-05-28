@@ -14,6 +14,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <mutex>
 
 void Utils::createDir(const std::string &Path) {
   runCmd("mkdir", {"-p", Path}).assumeGood();
@@ -71,6 +72,9 @@ std::string Utils::buildShellCmd(const std::string &Exe,
 }
 
 CmdResult Utils::runRawCmd(const std::string &ShellCmd) {
+  //static std::mutex mutex;
+  //std::lock_guard<std::mutex> guard(mutex);
+
   const unsigned BufferSize = 128;
   std::array<char, BufferSize> buffer{};
   std::stringstream Output;

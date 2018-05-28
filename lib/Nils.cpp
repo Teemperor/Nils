@@ -11,6 +11,7 @@
 #include <chrono>
 #include <iostream>
 #include <unistd.h>
+#include <thread>
 
 Nils::Nils(const std::string &DirToReduce) : DirToReduce(DirToReduce) {
   PassMgr.addPass(new DeleteLinePass());
@@ -38,21 +39,44 @@ Nils::Nils(const std::string &DirToReduce) : DirToReduce(DirToReduce) {
 }
 
 PassResult Nils::iter() {
-  const Pass *P = PassMgr.getNextPass();
+  PassMgr.dumpStats();
 
   static std::size_t Ran = 0;
   ++Ran;
 
-  Job J(DirToReduce, TmpDir, Ran);
-  auto Result = J.run(P);
-  PassMgr.feedback(P, Result);
+  std::size_t Jobs = 1;
+  std::vector<std::thread *> Threads;
 
-  if (Result.Success) {
-    SaveWorkingDir RAII("/");
-    Utils::copyDir(TmpDir, DirToReduce);
+  std::vector<PassResult> Results;
+  Results.resize(Jobs);
+
+  for (std::size_t Index = 0; Index < Jobs; Index ++) {
+    const Pass *P = PassMgr.getNextPass();
+    std::string JobDir = TmpDir + "-j" + std::to_string(Index);
+
+    std::thread *T = new std::thread([this, Index, JobDir, &Results, P]() {
+      Job J(DirToReduce, JobDir, Ran);
+      auto Result = J.run(P);
+      Results[Index] = Result;
+    });
+    Threads.push_back(T);
   }
+  for (auto &T : Threads)
+    T->join();
 
-  return Result;
+
+  PassResult FinalResult;
+  for (auto &Result : Results) {
+    FinalResult = Result;
+    PassMgr.feedback(Result.UsedPass, Result);
+    if (Result.Success) {
+      assert(!Result.WorkingDir.empty() && "Used working dir empty?");
+      SaveWorkingDir RAII("/");
+      Utils::copyDir(Result.WorkingDir, DirToReduce);
+      break;
+    }
+  }
+  return FinalResult;
 }
 
 void Nils::run() {
