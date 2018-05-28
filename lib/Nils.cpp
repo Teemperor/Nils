@@ -14,6 +14,7 @@ Nils::Nils(const std::string &DirToReduce) : DirToReduce(DirToReduce) {
   PassMgr.addPass(new DeleteLinePass());
   PassMgr.addPass(new DeleteCharRangePass());
 
+  TmpDir += std::to_string(getppid());
 
   std::string TestDir = createTmpDir();
   std::string TestCmd = TestDir + "/nils.sh";
