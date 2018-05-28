@@ -14,7 +14,8 @@ struct CmdResult {
   int ExitCode;
   void assumeGood() {
     if (ExitCode != 0)
-      throw std::logic_error("Command unexpectedly failed: " + Command
+      throw std::logic_error("Command unexpectedly failed with exit code "
+                             + std::to_string(ExitCode) + ": "+ Command
        + ":\n" + Stdout);
   }
 };
