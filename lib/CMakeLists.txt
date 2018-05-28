@@ -10,6 +10,8 @@ add_library(nilsLib
     Pass.h
     PassManager.cpp
     PassManager.h
+    Job.cpp
+    Job.h
 
     PassResult.cpp
     PassResult.h
@@ -25,6 +27,7 @@ add_library(nilsLib
     NativePasses/RemoveTokenPass.cpp
     NativePasses/RemoveTokenPass.h
     NativePasses/RenameTokenPass.cpp
-    NativePasses/RenameTokenPass.h)
+    NativePasses/RenameTokenPass.h
+)
 
 target_link_libraries(nilsLib)

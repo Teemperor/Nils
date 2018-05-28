@@ -18,22 +18,25 @@
 #include <string>
 #include <array>
 
+void Utils::createDir(const std::string &Path) {
+  runCmd("mkdir", {"-p", Path}).assumeGood();
+}
+
 void Utils::deleteDir(const std::string &Path) {
-  runCmd("rm", {"-rf", Path});
+  runCmd("rm", {"-rf", Path}).assumeGood();
 }
 
 void Utils::deleteFile(const std::string &Path) {
-  runCmd("rm", {"-f", Path});
+  runCmd("rm", {"-f", Path}).assumeGood();
 }
-
 
 void Utils::copyDir(const std::string &Source, const std::string &Target) {
   deleteDir(Target);
-  runCmd("cp", {"-r", Source, Target});
+  runCmd("cp", {"-r", Source, Target}).assumeGood();
 }
 
 void Utils::copyFile(const std::string &Source, const std::string &Target) {
-  runCmd("cp", {Source, Target});
+  runCmd("cp", {Source, Target}).assumeGood();
 }
 
 CmdResult Utils::runCmd(const std::string &Exe,
@@ -86,7 +89,7 @@ CmdResult Utils::runRawCmd(const std::string &ShellCmd) {
       Output << buffer.data();
   }
 
-  CmdResult Result = {Output.str(), WEXITSTATUS(pclose(Pipe))};
+  CmdResult Result = {ShellCmd, Output.str(), WEXITSTATUS(pclose(Pipe))};
 
 //#define PRINT_DEBUG
 #ifdef PRINT_DEBUG
@@ -139,6 +142,7 @@ std::string Utils::readFile(const std::string &Path) {
 
 std::size_t Utils::sizeOfDir(const std::string &Path) {
   CmdResult DuResult = runCmd("du", {"-sb", Path});
+  DuResult.assumeGood();
   std::istringstream ISS(DuResult.Stdout);
   std::size_t Result;
   ISS >> Result;
@@ -158,4 +162,5 @@ bool Utils::fileExists(const std::string &Path) {
   std::ifstream F(Path);
   return F.good();
 }
+
 

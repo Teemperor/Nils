@@ -8,13 +8,9 @@
 
 class Nils {
   std::string DirToReduce;
-  std::string TmpDir = "/tmp/nils";
+  std::string TmpDir;
 
   PassManager PassMgr;
-
-  std::string createTmpDir();
-
-  const Pass *runPassOnDir(const std::string &Dir);
 
   std::function<void(const PassResult &)> Callback;
 

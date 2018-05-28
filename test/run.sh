@@ -16,6 +16,6 @@ rm -rf "$tmp_dir"
 
 cp -r "$source_dir" "$tmp_dir"
 cd "$tmp_dir"
-"$nils_exe"
+"$nils_exe" --batch
 
 diff -r -U3 "$source_dir.expected" "$tmp_dir"

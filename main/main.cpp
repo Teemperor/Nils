@@ -22,12 +22,12 @@ int main(int argv, char **argc) {
   }
 
   std::string Dir;
-  if (argv <= 1) {
+  if (Args.front() != "--batch") {
+    Dir = Args.front();
+  } else {
     char *CurrentDir = get_current_dir_name();
     Dir = CurrentDir;
     free(CurrentDir);
-  } else {
-    Dir = Args.front();
   }
 
   if (!Utils::fileExists("nils.sh")) {
