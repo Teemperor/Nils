@@ -14,3 +14,4 @@ file(DOWNLOAD "https://github.com/catchorg/Catch2/releases/download/v2.2.2/catch
 
 add_unit_test(ShellCommandTest)
 add_unit_test(UtilsTest)
+add_unit_test(PassUtilsTest)

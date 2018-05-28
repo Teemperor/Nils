@@ -11,6 +11,7 @@ class PassManager {
 
   class PassRecord {
     std::size_t Points = 1;
+    std::size_t FailedLastNTimes = 0;
     const Pass *P;
   public:
     explicit PassRecord(const Pass *P) : P(P) {
@@ -20,6 +21,15 @@ class PassManager {
     }
     std::size_t getPoints() const {
       return Points;
+    }
+    void feedback(const PassResult &Result) {
+      if (Result.Success)
+        FailedLastNTimes = 0;
+      else
+        FailedLastNTimes++;
+    }
+    std::size_t getFailedLastNTimes() const {
+      return FailedLastNTimes;
     }
     void setPoints(std::size_t V) {
       Points = V;
@@ -36,6 +46,8 @@ class PassManager {
 public:
   PassManager() : Eng(0) {
   }
+
+  void dumpStats();
 
   void addPass(Pass *P) {
     Passes.push_back(P);

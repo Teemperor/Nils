@@ -1,17 +1,22 @@
 #include <cassert>
+#include <iostream>
+#include <iomanip>
 #include "PassManager.h"
 
 void PassManager::feedback(const Pass *P, const PassResult &Result) {
   auto &Record = getRecordForPass(P);
+  Record.feedback(Result);
+
   if (Result.Success && Result.DirSizeChange < 0) {
     std::size_t AdditionalPoints = -Result.DirSizeChange;
 
     AdditionalPoints *= 4;
     AdditionalPoints += 40;
 
-    Record.setPoints(Record.getPoints() + Result.DirSizeChange);
+    Record.setPoints(Record.getPoints() + AdditionalPoints);
   } else {
-    Record.setPoints(Record.getPoints() / 2);
+    std::size_t FailPunishment = (Record.getFailedLastNTimes() / 10 + 1);
+    Record.setPoints(Record.getPoints() / FailPunishment);
   }
 }
 
@@ -26,6 +31,8 @@ const Pass *PassManager::getNextPass() {
   }
 
   std::size_t SelectedPassPoints = getRandomBelow(PointsSum, Eng);
+
+  dumpStats();
 
   for (auto &E : PassRecords) {
     if (E.getPoints() > SelectedPassPoints) {
@@ -44,4 +51,15 @@ PassManager::PassRecord &PassManager::getRecordForPass(const Pass *P) {
       return E;
   }
   assert(false);
+}
+
+void PassManager::dumpStats() {
+  std::cout << "STATS:\n";
+  for (auto &E : PassRecords) {
+    std::cout << " PASS: ";
+    std::cout << std::setw(25) << std::left;
+    std::cout << E.getPass()->getName() << " : ";
+    std::cout << std::setw(10) << std::left << E.getPoints();
+    std::cout  << "(FailedN: " << E.getFailedLastNTimes() << ")\n";
+  }
 }

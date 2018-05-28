@@ -4,6 +4,8 @@
 #include <NativePasses/DeleteLinePass.h>
 #include <NativePasses/DeleteCharRangePass.h>
 #include <chrono>
+#include <NativePasses/RemoveTokenPass.h>
+#include <NativePasses/RenameTokenPass.h>
 #include "Nils.h"
 #include "Utils.h"
 #include "PassResult.h"
@@ -16,7 +18,9 @@ Nils::Nils(const std::string &DirToReduce) : DirToReduce(DirToReduce) {
   PassMgr.addPass(new DeleteCharRangePass(5));
   PassMgr.addPass(new DeleteCharRangePass(20));
   PassMgr.addPass(new DeleteCharRangePass(50));
-  PassMgr.addPass(new DeleteCharRangePass());
+  PassMgr.addPass(new DeleteCharRangePass(1000));
+  PassMgr.addPass(new RemoveTokenPass());
+  PassMgr.addPass(new RenameTokenPass());
 
   TmpDir += std::to_string(getppid());
 
