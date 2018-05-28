@@ -43,7 +43,11 @@ PassResult Nils::iter() {
 
   static std::size_t Ran = 0;
 
-  std::size_t JobNum = 7;
+  std::size_t JobNum = std::thread::hardware_concurrency();
+  if (JobNum > 1)
+    --JobNum;
+  if (JobNum == 0)
+    JobNum = 1;
 
   std::vector<Job *> Jobs;
 
