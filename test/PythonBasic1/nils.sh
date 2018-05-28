@@ -1,3 +1,7 @@
 #!/bin/bash
 
-timeout 1s python prog.py | grep -q "90 bottles of beer on the wall"
+set -e
+set -o pipefail
+
+output=$(timeout 0.3s python prog.py) 
+echo "$output" | grep -q "90 bottles of beer on the wall"
