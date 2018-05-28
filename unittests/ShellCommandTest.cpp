@@ -18,11 +18,11 @@ TEST_CASE("Running commands", "[ShellCommand]") {
   REQUIRE(Utils::runCmd("echo", {"test"}).Stdout == "test\n");
   REQUIRE(Utils::runCmd("echo", {"test"}).ExitCode == 0);
 
-  REQUIRE(Utils::runCmd("mkdir", {"/not/allowed"}).Stdout != "");
+  REQUIRE(Utils::runCmd("mkdir", {"/not/allowed"}).Stdout == "");
   REQUIRE(Utils::runCmd("mkdir", {"/not/allowed"}).ExitCode != 0);
 }
 
 TEST_CASE("Working dir", "[ShellCommand]") {
-  REQUIRE(Utils::runCmd("echo", {"$PWD"}, "/tmp").Stdout == "/tmp\n");
-  REQUIRE(Utils::runCmd("echo", {"$PWD"}, "/tmp").ExitCode == 0);
+  REQUIRE(Utils::runCmd("readlink", {"-e", "/proc/self/cwd"}, "/tmp").Stdout == "/tmp\n");
+  REQUIRE(Utils::runCmd("readlink", {"-e", "/proc/self/cwd"}, "/tmp").ExitCode == 0);
 }

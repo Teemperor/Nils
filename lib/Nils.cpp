@@ -43,27 +43,28 @@ PassResult Nils::iter() {
 
   static std::size_t Ran = 0;
 
-  std::size_t Jobs = 7;
-  std::vector<std::thread *> Threads;
+  std::size_t JobNum = 7;
+
+  std::vector<Job *> Jobs;
 
   std::vector<PassResult> Results;
-  Results.resize(Jobs);
 
-  for (std::size_t Index = 0; Index < Jobs; Index ++) {
+  for (std::size_t Index = 0; Index < JobNum; Index ++) {
     ++Ran;
     const Pass *P = PassMgr.getNextPass();
+    assert(P && "Couldn't decide on pass?");
     std::string JobDir = TmpDir + "-j" + std::to_string(Index);
 
-    std::thread *T = new std::thread([this, Index, JobDir, &Results, P]() {
-      Job J(DirToReduce, JobDir, Ran);
-      auto Result = J.run(P);
-      Results[Index] = Result;
-    });
-    Threads.push_back(T);
+    Jobs.push_back(new Job(DirToReduce, JobDir, Ran));
+    Jobs.back()->start(P);
   }
-  for (auto &T : Threads)
-    T->join();
 
+  for (Job *J : Jobs) {
+    Results.push_back(J->join());
+  }
+
+  for (Job *J : Jobs)
+    delete J;
 
   PassResult FinalResult;
   for (auto &Result : Results) {
@@ -76,6 +77,8 @@ PassResult Nils::iter() {
       break;
     }
   }
+
+
   return FinalResult;
 }
 

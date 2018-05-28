@@ -12,7 +12,8 @@ add_library(nilsLib
     PassManager.h
     Job.cpp
     Job.h
-
+    Process.cpp
+    Process.h
     PassResult.cpp
     PassResult.h
     ExecutablePass.cpp

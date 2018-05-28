@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 #include <mutex>
+#include <wait.h>
 
 void Utils::createDir(const std::string &Path) {
   runCmd("mkdir", {"-p", Path}).assumeGood();
@@ -40,14 +41,65 @@ void Utils::copyFile(const std::string &Source, const std::string &Target) {
 CmdResult Utils::runCmd(const std::string &Exe,
                         const std::vector<std::string> &Args,
                         const std::string &WorkingDir) {
-
-  std::string ShellCmd = buildShellCmd(Exe, Args);
-  if (!WorkingDir.empty()) {
-    ShellCmd = buildShellCmd("cd", {WorkingDir}) + " ; " + ShellCmd;
+  int filedes[2];
+  if (pipe(filedes) == -1) {
+    perror("pipe");
+    exit(1);
   }
-  ShellCmd += " 2>&1";
 
-  return runRawCmd(ShellCmd);
+  std::vector<char *> CArgs;
+  CArgs.push_back(const_cast<char *>(Exe.c_str()));
+  for (const std::string& Arg : Args) {
+    CArgs.push_back(const_cast<char *>(Arg.c_str()));
+  }
+  CArgs.push_back(nullptr);
+
+  pid_t pid = fork();
+  if (pid == -1) {
+    perror("fork");
+    exit(1);
+  } else if (pid == 0) {
+    if (!WorkingDir.empty())
+      chdir(WorkingDir.c_str());
+    while ((dup2(filedes[1], STDOUT_FILENO) == -1) && (errno == EINTR)) {}
+    close(filedes[1]);
+    close(filedes[0]);
+
+    execvp(Exe.c_str(), CArgs.data());
+    perror("execvp");
+    _exit(1);
+  }
+  close(filedes[1]);
+
+  std::stringstream ss;
+  // buffer and 0 terminate it.
+  char buffer[4097];
+  buffer[4096] = 0;
+
+
+  while (true) {
+    ssize_t count = read(filedes[0], buffer, sizeof(buffer) - 1);
+    if (count == -1) {
+      if (errno == EINTR) {
+        continue;
+      } else {
+        perror("read");
+        exit(1);
+      }
+    } else if (count == 0) {
+      break;
+    } else {
+      buffer[count] = 0;
+      ss << (char*)buffer;
+    }
+  }
+  close(filedes[0]);
+
+  int WaitStatus;
+  auto WaitResult = waitpid(pid, &WaitStatus, 0);
+  assert(WaitResult == pid && "Error on waitpid?");
+  auto ExitCode = WEXITSTATUS(WaitStatus);
+  return {Exe, ss.str(), ExitCode};
 }
 
 std::string Utils::buildShellCmd(const std::string &Exe,
@@ -72,33 +124,7 @@ std::string Utils::buildShellCmd(const std::string &Exe,
 }
 
 CmdResult Utils::runRawCmd(const std::string &ShellCmd) {
-  //static std::mutex mutex;
-  //std::lock_guard<std::mutex> guard(mutex);
-
-  const unsigned BufferSize = 128;
-  std::array<char, BufferSize> buffer{};
-  std::stringstream Output;
-
-  FILE *Pipe = popen(ShellCmd.c_str(), "r");
-
-  if (!Pipe)
-    throw std::runtime_error("popen() failed!");
-
-  while (!feof(Pipe)) {
-    if (fgets(buffer.data(), BufferSize, Pipe) != nullptr)
-      Output << buffer.data();
-  }
-
-  CmdResult Result = {ShellCmd, Output.str(), WEXITSTATUS(pclose(Pipe))};
-
-//#define PRINT_DEBUG
-#ifdef PRINT_DEBUG
-  std::cout << "RUNNING:" << ShellCmd << std::endl;
-  std::cout << " OUTPUT: " << Result.Stdout << std::endl;
-  std::cout << " EXIT CODE: " << Result.ExitCode << std::endl;
-#endif
-
-  return Result;
+  assert(false);
 }
 
 std::vector<std::string> Utils::listFiles(const std::string &Dir,
@@ -125,6 +151,7 @@ std::vector<std::string> Utils::listFiles(const std::string &Dir,
 
   return Result;
 }
+
 
 std::string Utils::readFile(const std::string &Path) {
   std::ifstream In(Path);
