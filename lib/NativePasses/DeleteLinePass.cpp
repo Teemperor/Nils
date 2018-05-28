@@ -37,12 +37,16 @@ void DeleteLinePass::runOnDir(const PassRun &Run) const {
   if (Lines.empty())
     return;
 
-  std::size_t RemovedLine = getRandomBelow(Lines.size(), Eng);
+  std::size_t Start = getRandomBelow(Lines.size(), Eng);
+  std::size_t End = getRandomBelow(Lines.size(), Eng);
+  if (Start > End) {
+    End = Start + 1;
+  }
 
   std::ofstream Out(File);
   std::size_t Index = 0;
   for (auto &Line : Lines) {
-    if (Index != RemovedLine)
+    if (Index < Start || Index > End)
       Out << Line << "\n";
     ++Index;
   }
