@@ -14,7 +14,7 @@ class Job {
 public:
   explicit Job(const std::string &SourceDir, const std::string &WorkingDir);
 
-  PassResult run(const Pass *P);
+  PassResult run(const Pass *PassToRun);
 };
 
 #endif // NILS_JOB_H

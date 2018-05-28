@@ -11,7 +11,7 @@ std::string Job::createTmpDir() {
 Job::Job(const std::string &SourceDir, const std::string &WorkingDir)
     : SourceDir(SourceDir), WorkingDir(WorkingDir) {}
 
-PassResult Job::run(const Pass *P) {
+PassResult Job::run(const Pass *PassToRun) {
   ++Seed;
 
   std::string TestDir = createTmpDir();
@@ -22,10 +22,10 @@ PassResult Job::run(const Pass *P) {
   PassResult Result;
 
   Result.DirSizeChange = static_cast<long long>(Utils::sizeOfDir(TestDir));
-  if (P) {
+  if (PassToRun) {
     MeasureTime<std::chrono::nanoseconds> RAII(Result.PassTime);
-    P->runOnDir({Seed, TestDir});
-    Result.UsedPass = P;
+    PassToRun->runOnDir({Seed, TestDir});
+    Result.UsedPass = PassToRun;
   }
 
   Result.DirSizeChange -= static_cast<long long>(Utils::sizeOfDir(TestDir));
@@ -36,7 +36,7 @@ PassResult Job::run(const Pass *P) {
   CmdResult TestResult = Utils::runCmd(TestCmd, {}, TestDir);
   Result.Success = TestResult.ExitCode == 0;
   // If we have a pass, it's only an success if that pass reduces the size.
-  if (P)
+  if (PassToRun)
     Result.Success &= Result.DirSizeChange < 0;
 
   return Result;
