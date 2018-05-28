@@ -1,6 +1,6 @@
-#include <chrono>
 #include "Job.h"
 #include "Utils.h"
+#include <chrono>
 
 std::string Job::createTmpDir() {
   Utils::createDir(WorkingDir);
@@ -9,9 +9,7 @@ std::string Job::createTmpDir() {
 }
 
 Job::Job(const std::string &SourceDir, const std::string &WorkingDir)
-    : SourceDir(SourceDir), WorkingDir(WorkingDir) {
-}
-
+    : SourceDir(SourceDir), WorkingDir(WorkingDir) {}
 
 PassResult Job::run(const Pass *P) {
   ++Seed;

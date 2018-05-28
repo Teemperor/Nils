@@ -1,7 +1,7 @@
-#include <cassert>
-#include <iostream>
-#include <iomanip>
 #include "PassManager.h"
+#include <cassert>
+#include <iomanip>
+#include <iostream>
 
 void PassManager::feedback(const Pass *P, const PassResult &Result) {
   auto &Record = getRecordForPass(P);
@@ -60,6 +60,6 @@ void PassManager::dumpStats() {
     std::cout << std::setw(25) << std::left;
     std::cout << E.getPass()->getName() << " : ";
     std::cout << std::setw(10) << std::left << E.getTotalPoints();
-    std::cout  << "(FailedN: " << E.getFailedLastNTimes() << ")\n";
+    std::cout << "(FailedN: " << E.getFailedLastNTimes() << ")\n";
   }
 }

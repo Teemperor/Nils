@@ -1,9 +1,9 @@
 #ifndef NILS_PASSRESULT_H
 #define NILS_PASSRESULT_H
 
-#include <string>
-#include <cstddef>
 #include "Pass.h"
+#include <cstddef>
+#include <string>
 
 struct PassResult {
   long long DirSizeChange = 0;
@@ -12,5 +12,4 @@ struct PassResult {
   bool Success = false;
 };
 
-
-#endif //NILS_PASSRESULT_H
+#endif // NILS_PASSRESULT_H

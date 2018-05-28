@@ -1,8 +1,8 @@
 #include "RenameTokenPass.h"
-#include <fstream>
-#include <Utils.h>
-#include "RemoveTokenPass.h"
 #include "PassUtils.h"
+#include "RemoveTokenPass.h"
+#include <Utils.h>
+#include <fstream>
 
 void RenameTokenPass::runOnDir(const PassRun &Run) const {
   auto Files = Utils::listFiles(Run.Dir);

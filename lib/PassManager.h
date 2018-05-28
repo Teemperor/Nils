@@ -1,10 +1,10 @@
 #ifndef NILS_PASSMANAGER_H
 #define NILS_PASSMANAGER_H
 
-#include <vector>
+#include "PassResult.h"
 #include <Pass.h>
 #include <Utils.h>
-#include "PassResult.h"
+#include <vector>
 
 class PassManager {
   std::vector<Pass *> Passes;
@@ -16,19 +16,15 @@ class PassManager {
     std::size_t Points = 1;
     std::size_t FailedLastNTimes = 0;
     const Pass *P;
+
   public:
-    explicit PassRecord(const Pass *P) : P(P) {
-    }
-    const Pass *getPass() const {
-      return P;
-    }
-    std::size_t getPoints() const {
-      return Points;
-    }
+    explicit PassRecord(const Pass *P) : P(P) {}
+    const Pass *getPass() const { return P; }
+    std::size_t getPoints() const { return Points; }
 
     std::size_t getTotalPoints() const {
       std::size_t Result = Points;
-      Result += 100 * (GoodRuns / (double) TotalRuns);
+      Result += 100 * (GoodRuns / (double)TotalRuns);
       return Result;
     }
 
@@ -40,9 +36,7 @@ class PassManager {
       } else
         FailedLastNTimes++;
     }
-    std::size_t getFailedLastNTimes() const {
-      return FailedLastNTimes;
-    }
+    std::size_t getFailedLastNTimes() const { return FailedLastNTimes; }
     void setPoints(std::size_t V) {
       Points = V;
       if (Points == 0)
@@ -55,9 +49,9 @@ class PassManager {
   std::vector<PassRecord> PassRecords;
 
   std::mt19937 Eng;
+
 public:
-  PassManager() : Eng(0) {
-  }
+  PassManager() : Eng(0) {}
 
   void dumpStats();
 
@@ -71,5 +65,4 @@ public:
   const Pass *getNextPass();
 };
 
-
-#endif //NILS_PASSMANAGER_H
+#endif // NILS_PASSMANAGER_H

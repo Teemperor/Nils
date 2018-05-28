@@ -3,20 +3,14 @@
 #include <sstream>
 
 namespace {
-  struct Stream {
-    std::string Str;
-    std::size_t Index = 0;
-    char pop() {
-      return Str.at(Index++);
-    }
-    char peek() const {
-      return Str.at(Index);
-    }
-    bool eof() const {
-      return Index >= Str.size();
-    }
-  };
-}
+struct Stream {
+  std::string Str;
+  std::size_t Index = 0;
+  char pop() { return Str.at(Index++); }
+  char peek() const { return Str.at(Index); }
+  bool eof() const { return Index >= Str.size(); }
+};
+} // namespace
 
 // Utility methods.
 static bool isChar(int c) {
@@ -28,7 +22,9 @@ static bool isNum(int c) { return c >= '0' && c <= '9'; }
 static bool isWhitespace(int c) {
   return c == ' ' || c == '\t' || c == '\n' || c == '\r';
 }
-static bool isAlphaNumUnderscore(int c) { return isNum(c) || isChar(c) || c == '_'; }
+static bool isAlphaNumUnderscore(int c) {
+  return isNum(c) || isChar(c) || c == '_';
+}
 
 std::vector<Token> PassUtils::tokenize(const std::string &S) {
   std::vector<Token> Result;
@@ -51,8 +47,7 @@ std::vector<Token> PassUtils::tokenize(const std::string &S) {
         c = Input.peek();
       }
       Result.push_back({Type, CurrentTok.str()});
-    }
-    else if (isNum(c)) {
+    } else if (isNum(c)) {
       Type = Token::Type::Number;
       while (isNum(c)) {
         CurrentTok << Input.pop();
@@ -61,8 +56,7 @@ std::vector<Token> PassUtils::tokenize(const std::string &S) {
         c = Input.peek();
       }
       Result.push_back({Type, CurrentTok.str()});
-    }
-    else if (isWhitespace(c)) {
+    } else if (isWhitespace(c)) {
       Type = Token::Type::Whitespace;
       while (isWhitespace(c)) {
         CurrentTok << Input.pop();

@@ -1,17 +1,16 @@
-#include <iostream>
-#include <cassert>
-#include <unistd.h>
-#include <NativePasses/DeleteLinePass.h>
-#include <NativePasses/DeleteCharRangePass.h>
-#include <chrono>
-#include <NativePasses/RemoveTokenPass.h>
-#include <NativePasses/RenameTokenPass.h>
 #include "Nils.h"
-#include "Utils.h"
-#include "PassResult.h"
 #include "ExecutablePass.h"
 #include "Job.h"
-
+#include "PassResult.h"
+#include "Utils.h"
+#include <NativePasses/DeleteCharRangePass.h>
+#include <NativePasses/DeleteLinePass.h>
+#include <NativePasses/RemoveTokenPass.h>
+#include <NativePasses/RenameTokenPass.h>
+#include <cassert>
+#include <chrono>
+#include <iostream>
+#include <unistd.h>
 
 Nils::Nils(const std::string &DirToReduce) : DirToReduce(DirToReduce) {
   PassMgr.addPass(new DeleteLinePass());
@@ -30,7 +29,8 @@ Nils::Nils(const std::string &DirToReduce) : DirToReduce(DirToReduce) {
   auto TestResult = TestJob.run(nullptr);
   if (!TestResult.Success) {
     std::cerr << "When running the 'nils.sh' test file in the directory "
-                 << InitTestDir << " for testing reasons, it did not return 0. "
+              << InitTestDir
+              << " for testing reasons, it did not return 0. "
                  "Please ensure your nils.sh file actually returns 0 in its "
                  "current state";
     abort();
@@ -81,4 +81,3 @@ void Nils::loadPassesFromDir(const std::string &Path) {
     }
   }
 }
-

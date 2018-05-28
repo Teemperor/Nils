@@ -1,16 +1,14 @@
 #include "DeleteLinePass.h"
 
-#include <dirent.h>
+#include <Utils.h>
+#include <algorithm>
 #include <cassert>
-#include <vector>
-#include <random>
+#include <dirent.h>
+#include <fstream>
 #include <iostream>
 #include <iterator>
-#include <fstream>
+#include <random>
 #include <vector>
-#include <algorithm>
-#include <Utils.h>
-
 
 void DeleteLinePass::runOnDir(const PassRun &Run) const {
   auto Files = Utils::listFiles(Run.Dir);
@@ -28,8 +26,7 @@ void DeleteLinePass::runOnDir(const PassRun &Run) const {
     std::ifstream In(File);
 
     std::string Line;
-    while (std::getline(In, Line))
-    {
+    while (std::getline(In, Line)) {
       Lines.push_back(Line);
     }
   }

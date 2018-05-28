@@ -14,4 +14,4 @@ public:
   virtual void runOnDir(const PassRun &Run) const = 0;
 };
 
-#endif //NILS_PASS_H
+#endif // NILS_PASS_H

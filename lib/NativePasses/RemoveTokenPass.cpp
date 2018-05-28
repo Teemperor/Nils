@@ -1,7 +1,7 @@
-#include <Utils.h>
-#include <fstream>
 #include "RemoveTokenPass.h"
 #include "PassUtils.h"
+#include <Utils.h>
+#include <fstream>
 
 void RemoveTokenPass::runOnDir(const PassRun &Run) const {
   auto Files = Utils::listFiles(Run.Dir);

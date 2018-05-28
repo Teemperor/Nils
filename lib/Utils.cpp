@@ -1,22 +1,19 @@
 #include "Utils.h"
 
-
-#include <dirent.h>
+#include <algorithm>
+#include <array>
 #include <cassert>
-#include <vector>
-#include <random>
+#include <cstdio>
+#include <dirent.h>
+#include <fstream>
 #include <iostream>
 #include <iterator>
-#include <fstream>
-#include <vector>
-#include <algorithm>
-#include <sstream>
-#include <cstdio>
-#include <iostream>
 #include <memory>
+#include <random>
+#include <sstream>
 #include <stdexcept>
 #include <string>
-#include <array>
+#include <vector>
 
 void Utils::createDir(const std::string &Path) {
   runCmd("mkdir", {"-p", Path}).assumeGood();
@@ -40,9 +37,8 @@ void Utils::copyFile(const std::string &Source, const std::string &Target) {
 }
 
 CmdResult Utils::runCmd(const std::string &Exe,
-                          const std::vector<std::string> &Args,
-                          const std::string &WorkingDir) {
-
+                        const std::vector<std::string> &Args,
+                        const std::string &WorkingDir) {
 
   std::string ShellCmd = buildShellCmd(Exe, Args);
   if (!WorkingDir.empty()) {
@@ -59,7 +55,7 @@ std::string Utils::buildShellCmd(const std::string &Exe,
   std::stringstream ShellCmdStream;
 
   ShellCmdStream << "\"" << Exe << "\"";
-  for (const auto& Arg : Args) {
+  for (const auto &Arg : Args) {
     ShellCmdStream << " \"";
     for (char c : Arg) {
       if (c == '\"') {
@@ -93,9 +89,9 @@ CmdResult Utils::runRawCmd(const std::string &ShellCmd) {
 
 //#define PRINT_DEBUG
 #ifdef PRINT_DEBUG
-    std::cout << "RUNNING:" << ShellCmd << std::endl;
-    std::cout << " OUTPUT: " << Result.Stdout << std::endl;
-    std::cout << " EXIT CODE: " << Result.ExitCode << std::endl;
+  std::cout << "RUNNING:" << ShellCmd << std::endl;
+  std::cout << " OUTPUT: " << Result.Stdout << std::endl;
+  std::cout << " EXIT CODE: " << Result.ExitCode << std::endl;
 #endif
 
   return Result;
@@ -108,18 +104,17 @@ std::vector<std::string> Utils::listFiles(const std::string &Dir,
   DIR *dir;
   struct dirent *ent;
   if ((dir = opendir(Dir.c_str())) != nullptr) {
-    while ((ent = readdir (dir)) != nullptr) {
+    while ((ent = readdir(dir)) != nullptr) {
       std::string Path(ent->d_name);
       std::string FullPath = Dir + "/" + Path;
       if (ent->d_type == DT_REG)
         Result.push_back(FullPath);
-      if (ent->d_type == DT_DIR && Recursive &&
-          Path != "." && Path != "..") {
+      if (ent->d_type == DT_DIR && Recursive && Path != "." && Path != "..") {
         auto Children = listFiles(FullPath);
         Result.insert(Result.end(), Children.begin(), Children.end());
       }
     }
-    closedir (dir);
+    closedir(dir);
   } else {
     assert(false);
   }
@@ -136,7 +131,7 @@ std::string Utils::readFile(const std::string &Path) {
   In.seekg(0, std::ios::beg);
 
   Result.assign((std::istreambuf_iterator<char>(In)),
-             std::istreambuf_iterator<char>());
+                std::istreambuf_iterator<char>());
   return Result;
 }
 
@@ -151,8 +146,8 @@ std::size_t Utils::sizeOfDir(const std::string &Path) {
 
 bool Utils::stringEndsWith(const std::string &Str, const std::string &Suffix) {
   if (Str.length() >= Suffix.length()) {
-    return (0 == Str.compare (Str.length() - Suffix.length(),
-                              Suffix.length(), Suffix));
+    return (0 == Str.compare(Str.length() - Suffix.length(), Suffix.length(),
+                             Suffix));
   } else {
     return false;
   }
@@ -162,5 +157,3 @@ bool Utils::fileExists(const std::string &Path) {
   std::ifstream F(Path);
   return F.good();
 }
-
-

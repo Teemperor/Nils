@@ -1,8 +1,8 @@
 #ifndef NILS_JOB_H
 #define NILS_JOB_H
 
-#include <string>
 #include "PassResult.h"
+#include <string>
 
 class Job {
 
@@ -12,10 +12,9 @@ class Job {
   std::size_t Seed = 0;
 
 public:
-  explicit Job(const std::string &SourceDir,
-               const std::string &WorkingDir);
+  explicit Job(const std::string &SourceDir, const std::string &WorkingDir);
 
   PassResult run(const Pass *P);
 };
 
-#endif //NILS_JOB_H
+#endif // NILS_JOB_H

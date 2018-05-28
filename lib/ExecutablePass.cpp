@@ -1,7 +1,6 @@
 #include "ExecutablePass.h"
 #include "Utils.h"
 
-
 ExecutablePass::ExecutablePass(const std::string &ExePath) : ExePath(ExePath) {
   std::vector<std::string> Parts;
   splitStr(ExePath, '/', Parts);

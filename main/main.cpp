@@ -1,6 +1,6 @@
-#include <unistd.h>
 #include <Nils.h>
 #include <iostream>
+#include <unistd.h>
 
 static const char *Red = "\x1b[31m";
 static const char *Green = "\x1b[32m";
@@ -32,10 +32,9 @@ int main(int argv, char **argc) {
 
   if (!Utils::fileExists("nils.sh")) {
     std::cerr << "Could not find the test file 'nils.sh' in the directory '"
-         << Dir << "'. Without a test file nils can't minimize.\n";
+              << Dir << "'. Without a test file nils can't minimize.\n";
     return 1;
   }
-
 
   bool MinusBatchSpecified = false;
   for (const auto &Arg : Args) {
@@ -44,12 +43,14 @@ int main(int argv, char **argc) {
   }
 
   if (!MinusBatchSpecified) {
-    std::cout << color(Red, "<[WARNING]> <[WARNING]> <[WARNING]> <[WARNING]>\n");
+    std::cout << color(Red,
+                       "<[WARNING]> <[WARNING]> <[WARNING]> <[WARNING]>\n");
     std::cout << "nils will reduce the directory '" << Dir << "' now, which can"
               << " cause that all \nfiles in it are irreversible deleted. Are"
               << " you sure you want to continue?\n";
     std::cout << "Note: You can skip this warning with the --batch flag.\n";
-    std::cout << color(Red, "<[WARNING]> <[WARNING]> <[WARNING]> <[WARNING]>\n");
+    std::cout << color(Red,
+                       "<[WARNING]> <[WARNING]> <[WARNING]> <[WARNING]>\n");
     std::cout << "To continue, please enter the directory name:\n";
     std::cout.flush();
     while (true) {
@@ -80,9 +81,9 @@ int main(int argv, char **argc) {
     }
   }
 
-  N.setCallback([](const PassResult &Result){
-    std::string Status = Result.Success ?
-                         color(Green, "[GOOD]") : color(Red, "[FAIL]");
+  N.setCallback([](const PassResult &Result) {
+    std::string Status =
+        Result.Success ? color(Green, "[GOOD]") : color(Red, "[FAIL]");
     std::cout << Status << " " << Result.UsedPass->getName()
               << " Pass took: " << Result.PassTime << " and changed size by "
               << Result.DirSizeChange << std::endl;

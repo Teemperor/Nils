@@ -1,6 +1,6 @@
+#include "DeleteCharRangePass.h"
 #include <Utils.h>
 #include <fstream>
-#include "DeleteCharRangePass.h"
 
 void DeleteCharRangePass::runOnDir(const PassRun &Run) const {
   auto Files = Utils::listFiles(Run.Dir);
