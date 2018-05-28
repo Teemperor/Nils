@@ -15,13 +15,19 @@ static std::string color(const char *Color, const std::string &Token) {
 }
 
 int main(int argv, char **argc) {
+
+  std::vector<std::string> Args;
+  for (int A = 1; A < argv; ++A) {
+    Args.emplace_back(argc[A]);
+  }
+
   std::string Dir;
   if (argv <= 1) {
     char *CurrentDir = get_current_dir_name();
     Dir = CurrentDir;
     free(CurrentDir);
   } else {
-    Dir = argc[1];
+    Dir = Args.front();
   }
 
   if (!Utils::fileExists("nils.sh")) {
@@ -30,10 +36,6 @@ int main(int argv, char **argc) {
     return 1;
   }
 
-  std::vector<std::string> Args;
-  for (int A = 0; A < argv; ++A) {
-    Args.emplace_back(argc[A]);
-  }
 
   bool MinusBatchSpecified = false;
   for (const auto &Arg : Args) {

@@ -24,7 +24,7 @@ foreach(subdir ${SUBDIRS})
            COMMAND
            bash -x
            "${CMAKE_CURRENT_SOURCE_DIR}/run.sh"
-           "${CMAKE_BINARY_DIR}/nils"
+           "${CMAKE_BINARY_DIR}/main/nils"
            "${source_path}"
            "${target_path}"
       )
