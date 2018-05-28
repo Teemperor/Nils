@@ -37,6 +37,8 @@ public:
     return Str.find(Prefix) == 0;
   }
 
+  static bool fileExists(const std::string &Path);
+
 };
 
 template<typename Out>

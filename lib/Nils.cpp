@@ -28,6 +28,10 @@ Nils::Nils(const std::string &DirToReduce) : DirToReduce(DirToReduce) {
   std::string TestCmd = TestDir + "/nils.sh";
   CmdResult TestResult = Utils::runCmd(TestCmd, {}, TestDir);
   if (TestResult.ExitCode != 0) {
+    std::cerr << "When running the 'nils.sh' test file in the directory "
+                 << TestDir << " for testing reasons, it did not return 0. "
+                 "Please ensure your nils.sh file actually returns 0 in its"
+                 "current state";
     assert(false);
   }
 }

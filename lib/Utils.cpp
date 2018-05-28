@@ -154,3 +154,8 @@ bool Utils::stringEndsWith(const std::string &Str, const std::string &Suffix) {
   }
 }
 
+bool Utils::fileExists(const std::string &Path) {
+  std::ifstream F(Path);
+  return F.good();
+}
+
