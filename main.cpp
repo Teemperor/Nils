@@ -26,8 +26,9 @@ int main(int argv, char **argc) {
   }
 
   N.setCallback([](const PassResult &Result){
-    std::cout << Result.PassName << " EXIT " << Result.Success << " Pass took: "
-              << Result.PassTime << " and reduced by "
+    std::string Status = Result.Success ? "[SUCCESS]" : "[  FAIL  ]";
+    std::cout << Status << " " << Result.UsedPass->getName()
+              << " Pass took: " << Result.PassTime << " and reduced by "
               << Result.DirSizeChange << std::endl;
     return;
   });

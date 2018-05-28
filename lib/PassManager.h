@@ -4,20 +4,31 @@
 #include <vector>
 #include <Pass.h>
 #include <Utils.h>
+#include "PassResult.h"
 
 class PassManager {
   std::vector<Pass *> Passes;
 
   class PassRecord {
-    std::size_t Weight = 1;
+    std::size_t Points = 1;
     const Pass *P;
   public:
     explicit PassRecord(const Pass *P) : P(P) {
     }
-    const Pass *getPass() {
+    const Pass *getPass() const {
       return P;
     }
+    std::size_t getPoints() const {
+      return Points;
+    }
+    void setPoints(std::size_t V) {
+      Points = V;
+      if (Points == 0)
+        Points = 1;
+    }
   };
+
+  PassRecord &getRecordForPass(const Pass *P);
 
   std::vector<PassRecord> PassRecords;
 
@@ -31,11 +42,9 @@ public:
     PassRecords.emplace_back(P);
   }
 
-  const Pass *getNextPass() {
-    if (Passes.empty())
-      return nullptr;
-    return selectRandom(PassRecords, Eng).getPass();
-  }
+  void feedback(const Pass *P, const PassResult &Result);
+
+  const Pass *getNextPass();
 };
 
 

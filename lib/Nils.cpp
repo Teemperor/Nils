@@ -12,6 +12,10 @@
 
 Nils::Nils(const std::string &DirToReduce) : DirToReduce(DirToReduce) {
   PassMgr.addPass(new DeleteLinePass());
+  PassMgr.addPass(new DeleteCharRangePass(1));
+  PassMgr.addPass(new DeleteCharRangePass(5));
+  PassMgr.addPass(new DeleteCharRangePass(20));
+  PassMgr.addPass(new DeleteCharRangePass(50));
   PassMgr.addPass(new DeleteCharRangePass());
 
   TmpDir += std::to_string(getppid());
@@ -59,11 +63,12 @@ PassResult Nils::iter() {
   Utils::deleteFile(TestCmd);
 
   PassResult Result;
+  const Pass *P;
   Result.DirSizeChange = static_cast<long long>(Utils::sizeOfDir(TestDir));
   {
     MeasureTime<std::chrono::nanoseconds> RAII(Result.PassTime);
-    const Pass *P = runPassOnDir(TestDir);
-    Result.PassName = P->getName();
+    P = runPassOnDir(TestDir);
+    Result.UsedPass = P;
   }
 
   Result.DirSizeChange -= static_cast<long long>(Utils::sizeOfDir(TestDir));
@@ -73,6 +78,8 @@ PassResult Nils::iter() {
 
   CmdResult TestResult = Utils::runCmd(TestCmd, {}, TestDir);
   Result.Success = TestResult.ExitCode == 0 && Result.DirSizeChange < 0;
+
+  PassMgr.feedback(P, Result);
 
   if (TestResult.ExitCode == 0) {
     SaveWorkingDir RAII("/");
@@ -119,6 +126,7 @@ void Nils::loadPassesFromDir(const std::string &Path) {
   auto Files = Utils::listFiles(Path, false);
   for (auto &File : Files) {
     if (Utils::stringEndsWith(File, ".NilsPass")) {
+      std::cerr << File << std::endl;
       auto *P = new ExecutablePass(File);
       PassMgr.addPass(P);
     }

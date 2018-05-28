@@ -3,11 +3,12 @@
 
 #include <string>
 #include <cstddef>
+#include "Pass.h"
 
 struct PassResult {
   long long DirSizeChange = 0;
   std::size_t PassTime = 0;
-  std::string PassName;
+  const Pass *UsedPass = nullptr;
   bool Success = false;
 };
 
