@@ -9,6 +9,7 @@ class Job {
 
   std::string SourceDir;
   std::string WorkingDir;
+  std::string BackupDir;
   std::string createTmpDir();
   std::size_t Seed = 0;
   std::string TestDir;

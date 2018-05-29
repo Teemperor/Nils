@@ -29,6 +29,11 @@ void Utils::deleteFile(const std::string &Path) {
   runCmd("rm", {"-f", Path}).assumeGood();
 }
 
+void Utils::moveDir(const std::string &Source, const std::string &Target) {
+  deleteDir(Target);
+  runCmd("mv", {Source, Target}).assumeGood();
+}
+
 void Utils::copyDir(const std::string &Source, const std::string &Target) {
   deleteDir(Target);
   runCmd("cp", {"-r", Source, Target}).assumeGood();
@@ -99,7 +104,12 @@ CmdResult Utils::runCmd(const std::string &Exe,
   auto WaitResult = waitpid(pid, &WaitStatus, 0);
   assert(WaitResult == pid && "Error on waitpid?");
   auto ExitCode = WEXITSTATUS(WaitStatus);
-  return {Exe, ss.str(), ExitCode};
+
+  std::stringstream ArgStream;
+  for (auto &Arg : Args)
+    ArgStream << Arg << " ";
+
+  return {Exe, ss.str(), ExitCode, Args, ArgStream.str()};
 }
 
 std::string Utils::buildShellCmd(const std::string &Exe,
@@ -121,10 +131,6 @@ std::string Utils::buildShellCmd(const std::string &Exe,
   }
 
   return ShellCmdStream.str();
-}
-
-CmdResult Utils::runRawCmd(const std::string &ShellCmd) {
-  assert(false);
 }
 
 std::vector<std::string> Utils::listFiles(const std::string &Dir,

@@ -25,6 +25,15 @@ Nils::Nils(const std::string &DirToReduce) : DirToReduce(DirToReduce) {
 
   TmpDir = "/tmp/nils" + std::to_string(getppid());
 
+
+  if (!Utils::fileExists(DirToReduce + "/.git/HEAD")) {
+    Utils::runCmd("git", {"init"}, DirToReduce).assumeGood();
+    Utils::runCmd("git", {"config", "--local", "user.email", "nils"}, DirToReduce).assumeGood();
+    Utils::runCmd("git", {"config", "--local", "user.name", "nils@nils.org"}, DirToReduce).assumeGood();
+  }
+  Utils::runCmd("git", {"add", "."}, DirToReduce).assumeGood();
+  Utils::runCmd("git", {"commit", "--allow-empty", "-m", "nils start"}, DirToReduce).assumeGood();
+
   auto InitTestDir = TmpDir + "-inittest";
   Job TestJob(DirToReduce, InitTestDir, 0);
   auto TestResult = TestJob.run(nullptr);
@@ -76,7 +85,7 @@ PassResult Nils::iter() {
   if (FinalResult.Success && FinalResult.DirSizeChange < 0) {
     assert(!FinalResult.WorkingDir.empty() && "Used working dir empty?");
     SaveWorkingDir RAII("/");
-    Utils::copyDir(FinalResult.WorkingDir, DirToReduce);
+    Utils::moveDir(FinalResult.WorkingDir, DirToReduce);
     return FinalResult;
   }
   return Results.front();

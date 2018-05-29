@@ -12,11 +12,13 @@ struct CmdResult {
   std::string Command;
   std::string Stdout;
   int ExitCode;
+  std::vector<std::string> ArgList;
+  std::string Args;
   void assumeGood() {
     if (ExitCode != 0)
       throw std::logic_error("Command unexpectedly failed with exit code "
-                             + std::to_string(ExitCode) + ": "+ Command
-       + ":\n" + Stdout);
+                             + std::to_string(ExitCode) + ": "+ Command + " "
+       + Args + ":\n" + Stdout);
   }
 };
 
@@ -25,10 +27,10 @@ public:
   static void createDir(const std::string &Path);
   static void deleteDir(const std::string &Path);
   static void deleteFile(const std::string &Path);
+  static void moveDir(const std::string &Source, const std::string &Target);
   static void copyDir(const std::string &Source, const std::string &Target);
   static void copyFile(const std::string &Source, const std::string &Target);
 
-  static CmdResult runRawCmd(const std::string &Cmd);
   static CmdResult runCmd(const std::string &Exe,
                           const std::vector<std::string> &Args = {},
                           const std::string &WorkingDir = "");
