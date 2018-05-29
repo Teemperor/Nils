@@ -6,6 +6,8 @@ function(add_unit_test Name)
   add_test(NAME "${Name}" COMMAND "${Name}")
 endfunction()
 
+include_directories(../lib)
+
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/catch/")
 include_directories("${CMAKE_BINARY_DIR}/catch/")
 
