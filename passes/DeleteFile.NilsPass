@@ -1,3 +1,8 @@
 #!/bin/bash
 
+if [ "$1" = "--register" ]; then
+  echo "{}"
+  exit 0
+fi
+
 rm -f "$1"

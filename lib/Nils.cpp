@@ -96,9 +96,7 @@ void Nils::run() {
   unsigned ErrorSequence = MaxErrorSequence;
   while (true) {
     PassResult R = iter();
-    if (Callback) {
-      Callback(R);
-    }
+    Feedback.getAppliedPass()(R);
 
     if (!R.Success) {
       ErrorSequence--;
@@ -114,9 +112,12 @@ void Nils::loadPassesFromDir(const std::string &Path) {
   auto Files = Utils::listFiles(Path, false);
   for (auto &File : Files) {
     if (Utils::stringEndsWith(File, ".NilsPass")) {
-      std::cerr << File << std::endl;
-      auto *P = new ExecutablePass(File);
-      PassMgr.addPass(P);
+      try {
+        auto *P = new ExecutablePass(File);
+        PassMgr.addPass(P);
+      } catch(const RegisterException &E) {
+
+      }
     }
   }
 }

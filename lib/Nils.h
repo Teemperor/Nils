@@ -3,6 +3,7 @@
 
 #include "PassManager.h"
 #include "PassResult.h"
+#include "NilsFeedback.h"
 #include <functional>
 #include <string>
 
@@ -12,15 +13,15 @@ class Nils {
 
   PassManager PassMgr;
 
-  std::function<void(const PassResult &)> Callback;
+  NilsFeedback Feedback;
 
 public:
   explicit Nils(const std::string &DirToReduce);
 
   void loadPassesFromDir(const std::string &Path);
 
-  void setCallback(const std::function<void(const PassResult &)> &C) {
-    Callback = C;
+  NilsFeedback &getFeedback() {
+    return Feedback;
   }
 
   void run();

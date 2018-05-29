@@ -4,6 +4,8 @@ include_directories(.)
 add_library(nilsLib
     Nils.cpp
     Nils.h
+    NilsFeedback.cpp
+    NilsFeedback.h
     Utils.cpp
     Utils.h
     Pass.cpp
@@ -28,7 +30,6 @@ add_library(nilsLib
     NativePasses/RemoveTokenPass.cpp
     NativePasses/RemoveTokenPass.h
     NativePasses/RenameTokenPass.cpp
-    NativePasses/RenameTokenPass.h
-)
+    NativePasses/RenameTokenPass.h)
 
 target_link_libraries(nilsLib)

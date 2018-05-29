@@ -1,3 +1,8 @@
 #!/bin/bash
 
+if [ "$1" = "--register" ]; then
+  echo "{}"
+  exit 0
+fi
+
 sed -i '/^#/ d' "$1"

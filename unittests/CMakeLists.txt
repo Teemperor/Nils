@@ -8,12 +8,14 @@ endfunction()
 
 include_directories(../lib)
 
-file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/catch/")
 include_directories("${CMAKE_BINARY_DIR}/catch/")
 
-file(DOWNLOAD "https://github.com/catchorg/Catch2/releases/download/v2.2.2/catch.hpp"
-    "${CMAKE_BINARY_DIR}/catch/catch.hpp")
+if(NOT EXISTS "${CMAKE_BINARY_DIR}/catch/catch.hpp")
+  file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/catch/")
 
+  file(DOWNLOAD "https://github.com/catchorg/Catch2/releases/download/v2.2.2/catch.hpp"
+      "${CMAKE_BINARY_DIR}/catch/catch.hpp")
+endif()
 add_unit_test(ShellCommandTest)
 add_unit_test(UtilsTest)
 add_unit_test(PassUtilsTest)

@@ -1,4 +1,9 @@
 #!/bin/bash
 
+if [ "$1" = "--register" ]; then
+  echo "{}"
+  exit 0
+fi
+
 tail -n +2 "$1" > "$1.NilsBak"
 mv "$1.NilsBak" "$1"

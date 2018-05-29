@@ -1,6 +1,7 @@
 #include <Nils.h>
 #include <iostream>
 #include <unistd.h>
+#include <iomanip>
 
 static const char *Red = "\x1b[31m";
 static const char *Green = "\x1b[32m";
@@ -81,12 +82,17 @@ int main(int argv, char **argc) {
     }
   }
 
-  N.setCallback([](const PassResult &Result) {
+  N.getFeedback().setAppliedPass([](const PassResult &Result) {
+    std::cout << "\r";
     std::string Status =
         Result.Success ? color(Green, "[GOOD]") : color(Red, "[FAIL]");
-    std::cout << Status << " " << Result.UsedPass->getName()
-              << " Pass took: " << Result.PassTime << " and changed size by "
-              << Result.DirSizeChange << std::endl;
+    std::cout << Status << " " << std::setw(40) << std::left
+              << color(Blue, Result.UsedPass->getName());
+    if (Result.Success) {
+    std::cout << " | " << std::setw(8) << std::right << Result.DirSizeChange <<
+                 " Bytes";
+    }
+    std::cout << std::endl;
     return;
   });
 

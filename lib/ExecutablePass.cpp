@@ -1,6 +1,8 @@
 #include "ExecutablePass.h"
 #include "Utils.h"
 
+#include "json.hpp"
+
 ExecutablePass::ExecutablePass(const std::string &ExePath) : ExePath(ExePath) {
   std::vector<std::string> Parts;
   splitStr(ExePath, '/', Parts);
@@ -10,6 +12,13 @@ ExecutablePass::ExecutablePass(const std::string &ExePath) : ExePath(ExePath) {
   if (Utils::stringEndsWith(Name, Suffix)) {
     Name.resize(Name.size() - Suffix.size());
   }
+
+  CmdResult RegisterResult = Utils::runCmd(ExePath, {"--register"}, "/tmp");
+  if (RegisterResult.ExitCode != 0) {
+    throw RegisterException(ExePath);
+  }
+
+  auto RegInfo = nlohmann::json::parse(RegisterResult.Stdout);
 }
 
 void ExecutablePass::runOnDir(const PassRun &Run) const {
