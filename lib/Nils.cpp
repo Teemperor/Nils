@@ -39,13 +39,9 @@ Nils::Nils(const std::string &DirToReduce) : DirToReduce(DirToReduce) {
 }
 
 PassResult Nils::iter() {
-  PassMgr.dumpStats();
-
   static std::size_t Ran = 0;
 
   std::size_t JobNum = std::thread::hardware_concurrency();
-  if (JobNum > 1)
-    --JobNum;
   if (JobNum == 0)
     JobNum = 1;
 
@@ -72,18 +68,18 @@ PassResult Nils::iter() {
 
   PassResult FinalResult;
   for (auto &Result : Results) {
-    FinalResult = Result;
-    PassMgr.feedback(Result.UsedPass, Result);
-    if (Result.Success) {
-      assert(!Result.WorkingDir.empty() && "Used working dir empty?");
-      SaveWorkingDir RAII("/");
-      Utils::copyDir(Result.WorkingDir, DirToReduce);
-      break;
+    if (Result.Success && FinalResult.DirSizeChange > Result.DirSizeChange) {
+      FinalResult = Result;
     }
+    PassMgr.feedback(Result.UsedPass, Result);
   }
-
-
-  return FinalResult;
+  if (FinalResult.Success && FinalResult.DirSizeChange < 0) {
+    assert(!FinalResult.WorkingDir.empty() && "Used working dir empty?");
+    SaveWorkingDir RAII("/");
+    Utils::copyDir(FinalResult.WorkingDir, DirToReduce);
+    return FinalResult;
+  }
+  return Results.front();
 }
 
 void Nils::run() {
