@@ -69,7 +69,7 @@ void Job::start(const Pass *PassToRun) {
 
   if (LastPass) {
     Utils::runCmd("git", {"add", "."}, TestDir).assumeGood();
-    Utils::runCmd("git", {"commit", "--allow-empty", "-m", LastPass->getName()}, TestDir).assumeGood();
+    Utils::runCmd("git", {"commit", "--allow-empty", "-am", LastPass->getName()}, TestDir).assumeGood();
     Utils::moveDir(TestDir + "/.git", BackupDir + "/.git");
   }
 
