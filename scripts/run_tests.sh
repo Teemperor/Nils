@@ -13,4 +13,4 @@ cd build
 
 cmake ..
 make -j2
-ctest -j1 -VV
+ctest -j1 --output-on-failure
